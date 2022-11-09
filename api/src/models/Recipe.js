@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
       allowNull: false,
       primaryKey: true
     },
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -18,28 +18,27 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    score:{
+    healthScore: {
       type: DataTypes.INTEGER,
       defaultValue: 0,
       validate:{
         max: 100,
         min: 0
       }
-    },
-    healtScore: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-      validate:{
-        max: 100,
-        min: 0
-      }
-
     },
     image:{
       type: DataTypes.STRING
     },
     steps:{
       type: DataTypes.TEXT
-    }
-  });
+    },
+    createInDb: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
+  }, {
+    timestamps: false,
+  }
+);
 };
