@@ -1,0 +1,18 @@
+/* body{
+    /* background-color: black; */
+    /* background: url('../../images/fondohome01.jpg');
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute; */
+/*} */
+
+
+.main{
+    margin: 150px, 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
