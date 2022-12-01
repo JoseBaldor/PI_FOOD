@@ -3,33 +3,30 @@ const {Diet, Recipe} = require('../db.js');
 require('dotenv').config();
 const {API_KEY} = process.env;
 
-//ME traigo toda la info de la API
+//Me traigo toda la info de la API
 
 const getApiInfo = async() =>{
     const strUrlTemp = 'https://run.mocky.io/v3/84b3f19c-7642-4552-b69c-c53742badee5';
-    const strUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=5`;
+    const strUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=100`;
 
     const infoApiRecipes = await axios.get(strUrl);
 
-    const apiInfo = await infoApiRecipes.data.results.map(recipe=> {
+    const apiInfo = await infoApiRecipes.data.results?.map(recipe=> {
         const addDiets1 =  recipe.vegan?'vegan':'';
         const addDiets2 =  recipe.vegetarian?'vegetarian':'';
         const addDiets3 =  recipe.glutenFree?'gluten free':'';
 
-        return{
+        return({
             id: recipe.id,
             title: recipe.title,
             summary: recipe.summary,
             healthScore: recipe.healthScore,
             image:recipe.image,
             diets: [... new Set(recipe.diets.concat(addDiets1).concat(addDiets2).concat(addDiets3))].filter(Boolean) ,
-            steps: recipe.analyzedInstructions[0]?.steps.map(e => {
-                return {
-                    number: e.number,
-                    step: e.step
-                }
-                })
-        }
+            steps: recipe.analyzedInstructions[0]?.steps.map(e => e.step),
+            dishTypes: recipe.dishTypes,
+            createInDb: false
+        })
     })
 
     return apiInfo;
@@ -40,8 +37,8 @@ const getApiInfoById = async(id) =>{
     let apiInfo ={};
 
     if (id.includes('-')) { //Recetas de la Data Base
-        apiInfo = await getDbInfo();
-        apiInfo = apiInfo.filter(result => result.id === id);
+        apiInfo = await getDbById(id);
+
     } else { //Recetas de la API
         const infoApiRecipes = await axios.get(strUrl);
         const  result  = infoApiRecipes.data;
@@ -56,13 +53,9 @@ const getApiInfoById = async(id) =>{
             healthScore: result.healthScore,
             image: result.image,
             diets: [... new Set(result.diets.concat(addDiets1).concat(addDiets2).concat(addDiets3))].filter(Boolean),
-            steps: result.analyzedInstructions[0]?.steps.map(e => {
-                return {
-                    number: e.number,
-                    step: e.step
-                }
-                })
-    
+            steps: result.analyzedInstructions[0]?.steps.map(e => e.step),
+            dishTypes: result.dishTypes,
+            createInDb: false
         };
     }
 
@@ -82,9 +75,21 @@ const getDbInfo = async()=>{
     });
 };
 
+const getDbById = async (id) => {
+    return await Recipe.findByPk(id, {
+        include: {
+            model: Diet,
+            attributes: ['name'],
+            through: {
+                attributes: [],
+            }
+        }
+    });
+}
+
 const getAllRecipes = async() =>{
     const apiInfo = await getApiInfo();
-    const dbInfo = await getDbInfo();
+    const dbInfo = await getDbInfo(); 
     return  [...apiInfo, ...dbInfo];
 };
 
@@ -93,10 +98,11 @@ const getApiInfoDiets = async() =>{
     const dietsDb = await Diet.findAll();
     
     if(!dietsDb.length){
+
         const strUrlTemp = 'https://run.mocky.io/v3/84b3f19c-7642-4552-b69c-c53742badee5';
         const strUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&addRecipeInformation=true&number=100`;
     
-        const infoApiRecipes = await axios.get(strUrlTemp);
+        const infoApiRecipes = await axios.get(strUrl);
         const  result  = infoApiRecipes.data.results;
         const addDiets =  ['vegan','vegetarian','gluten free', 'ketogenic', 'lacto-vegetarian', 'ovo-vegetarian', 'pescetarian', 'paleo', 'primal', 'low FODMAP', 'whole 30'];
 
@@ -115,10 +121,8 @@ const getApiInfoDiets = async() =>{
 }
 
 const addRecipe = async (data)=>{
-    let {title, summary, healthScore, image, diets, steps, createInDb} = data;
+    let {title, summary, healthScore, image, diets, steps, dishTypes, createInDb} = data;
 
-    if(!title || !summary) throw new Error('Datos Incompletos');
-    if(healthScore < 0 || healthScore > 100) throw new Error('score debe tener un valor entre 0 - 100');
     healthScore = healthScore ? healthScore : 0
     
     let newRecipe = await Recipe.create({
@@ -127,6 +131,7 @@ const addRecipe = async (data)=>{
         healthScore,
         image,
         steps,
+        dishTypes,
         createInDb
     });
 
@@ -134,9 +139,25 @@ const addRecipe = async (data)=>{
         where: {name: diets}
     });
 
-    console.log(dietDB);
     await newRecipe.addDiet(dietDB);
     return newRecipe;
 }
 
-module.exports = {getApiInfo, getDbInfo, getAllRecipes, getApiInfoById, getApiInfoDiets, addRecipe}
+const deleteRecipe = async(id) =>{
+
+     const receipeDelete = await Recipe.findByPk(id, {
+        include: {
+            model: Diet,
+            attributes: ['name'],
+            through: {
+                attributes: [],
+            }
+        }
+    });
+
+    await receipeDelete.destroy();
+
+    return receipeDelete;
+
+}
+module.exports = {getApiInfo, getDbInfo, getAllRecipes, getApiInfoById, getApiInfoDiets, addRecipe, getDbById, deleteRecipe}
