@@ -1,0 +1,176 @@
+*{box-sizing: border-box;}
+
+.container{
+  margin-left: 30rem;
+  margin-right: 30rem;
+}
+
+.title{
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  border-radius: 10px;
+  border-color: #ffc500;
+  background-color: rgb(252, 250, 250);
+  border-width:0.2rem;
+  border-style: solid;
+  align-items: flex-start;
+}
+
+
+.text_titles{
+  font-size:1.2rem;
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+    /* justify-content: center; */
+}
+
+.content_label{
+margin-top: .3rem;
+margin-bottom: .5rem;
+margin-left: 1rem;
+}
+
+.content_input{
+  margin-top: .1rem;
+  margin-bottom: .5rem;
+  width: 100%;
+  
+}
+
+.input_line{
+  display: inline-block;
+  width: 95%;
+  height: 2rem;
+  
+}
+
+.input_area{
+  display: inline-block;
+  width: 95%;
+  height: 15rem;
+  resize: none;
+}
+
+.diets{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 100%;
+  margin-left: .5rem;
+  margin-right: .5rem;
+  margin-bottom: .5rem;
+}
+
+
+.content_input_diet{
+  display: flex;
+  margin-top: .1rem;
+  margin-bottom: .5rem;
+  margin-left: 1rem;
+}
+
+
+.selected{
+  height: 1.8rem;
+}
+
+.healt_image{
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-radius: 10px;
+  border-color: #ffc500;
+  background-color: rgb(252, 250, 250);
+  border-width:0.2rem;
+  border-style: solid;
+  align-items: flex-start;
+}
+
+
+.input_line{
+  display: inline-block;
+  width: 98%;
+}
+
+.input_line_number{
+  display: inline-block;
+  width: 50%;
+  height: 2rem;
+
+}
+.content_input_healt{
+  margin-top: .1rem;
+  width: 50%;
+  
+}
+
+.steps{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+
+.input_area_steps{
+  display: inline-block;
+  width: 98%;
+  height: 8rem;
+  resize: none;
+}
+
+.step_remove{
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.styles.button_remove{
+  height: 1rem;
+}
+
+.add_step{
+  width: 94%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 1rem;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+}
+
+.create_recipe{
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.add_diet{
+
+  border-radius: 5px;
+  border-color: #666665;
+  background-color:#baca68;
+  border-width:0.1rem;
+  border-style: solid;
+  margin-left: .5rem;
+  margin-right: .2rem;
+  margin-bottom: .2rem;
+}
+
+.diet_button{
+  margin-left: .4rem;
+  margin-right: .4rem;
+  margin-top: .2rem;
+  margin-bottom: .2rem
+}
+
+.danger{
+  font-size: smaller;
+  color: crimson;
+  margin-top: .1rem;
+  margin-bottom: .1rem;
+  margin-left: .5rem;
+  }
